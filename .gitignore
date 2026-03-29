@@ -1,1 +1,12 @@
-data/raw/\ndata/processed/\n__pycache__/\n*.pyc\n.ipynb_checkpoints/\n*.egg-info/\ndist/\n.env
+data
+/raw
+/data
+/processed/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+.env
+.venv
+venv/
