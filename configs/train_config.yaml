@@ -1,0 +1,54 @@
+# ── Training configuration ────────────────────────────────────────────────────
+
+general:
+  seed: 42
+  device: auto            # auto = cuda if available, else cpu
+  experiment_name: stellar-transit-net
+  mlflow_tracking_uri: ./mlruns
+
+data:
+  sequence_length: 2000
+  train_split: 0.70
+  val_split: 0.15
+  test_split: 0.15
+  num_workers: 2
+  pin_memory: false       # set true only when using GPU
+
+training:
+  epochs: 60
+  batch_size: 32
+  optimizer: adamw
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler: cosine       # options: cosine | step | plateau
+  warmup_epochs: 5
+  grad_clip: 1.0
+  early_stopping_patience: 10
+  checkpoint_dir: ./checkpoints
+
+  # Class imbalance — Kepler positive rate ~1%
+  class_weights: auto     # auto = inverse frequency weighting
+
+loss:
+  name: focal             # focal loss handles severe class imbalance better than BCE
+  gamma: 2.0
+  alpha: 0.25
+
+augmentation:
+  enabled: true
+  gaussian_noise_std: 0.01
+  time_shift_max: 50      # timesteps
+  flux_scale_range: [0.95, 1.05]
+  random_flip: false      # transits are asymmetric — do NOT flip
+
+active_learning:
+  initial_labeled_fraction: 0.10
+  query_batch_size: 50
+  n_iterations: 20
+  strategy: max_entropy   # options: max_entropy | bald | least_confident
+
+evaluation:
+  metrics: [accuracy, precision, recall, f1, auroc, auprc, ece]
+  primary_metric: auprc   # area under precision-recall; best for imbalanced data
+  calibration_bins: 15
+  conformal_alpha: 0.05   # 95% coverage guarantee

@@ -1,0 +1,42 @@
+# ── Model architecture configurations ────────────────────────────────────────
+
+cnn_tcn:
+  in_channels: 1
+  cnn_channels: [32, 64, 128]
+  cnn_kernel_size: 5
+  tcn_channels: [128, 128, 128]
+  tcn_kernel_size: 3
+  tcn_dropout: 0.2
+  num_classes: 2
+  fc_hidden: 256
+
+transformer:
+  input_dim: 1
+  patch_size: 50          # each flux patch = 50 timesteps
+  d_model: 128
+  nhead: 4
+  num_layers: 3
+  dim_feedforward: 256
+  dropout: 0.1
+  num_classes: 2
+  max_seq_len: 2000
+
+bayesian_net:
+  input_dim: 2000
+  hidden_dims: [512, 256, 128]
+  dropout_rate: 0.3       # kept ON during inference for MC sampling
+  num_classes: 2
+  mc_samples: 50          # forward passes for uncertainty estimation
+
+vae:
+  input_dim: 2000
+  latent_dim: 32
+  encoder_dims: [512, 256, 128]
+  decoder_dims: [128, 256, 512]
+  beta: 1.0               # beta-VAE weight on KL term
+
+ensemble:
+  models: [cnn_tcn, transformer, bayesian_net]
+  strategy: stacking       # options: stacking | averaging | voting
+  meta_learner: logistic   # used when strategy=stacking
+  temperature: 1.5         # temperature scaling applied post-ensemble

@@ -1,0 +1,33 @@
+# ── Data source configuration ─────────────────────────────────────────────────
+
+kepler:
+  mission: Kepler
+  label_table: cumulative  # NASA Exoplanet Archive KOI cumulative table
+  label_url: "https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=cumulative&select=*&format=csv"
+  cadence: long            # 30-minute cadence (more data per star)
+  cache_dir: ./data/raw/kepler
+  processed_dir: ./data/processed/kepler
+  # Disposition mapping from KOI table
+  positive_dispositions: [CONFIRMED, CANDIDATE]
+  negative_dispositions: [FALSE POSITIVE]
+
+tess:
+  mission: TESS
+  sectors: [1, 2, 3, 4, 5]   # start with first 5 sectors for manageability
+  cadence: long
+  cache_dir: ./data/raw/tess
+  processed_dir: ./data/processed/tess
+  label_url: "https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=TOI&select=*&format=csv"
+
+preprocessing:
+  target_length: 2000          # all curves resampled / truncated to this length
+  detrend_window_length: 101   # Savitzky-Golay filter window (must be odd)
+  detrend_polyorder: 2
+  sigma_clip_threshold: 5.0    # sigma clipping for outlier removal
+  phase_fold: true             # fold on best BLS period before feeding to model
+  normalize_method: median_std # (flux - median) / std
+
+splits:
+  dir: ./data/splits
+  stratify: true               # preserve planet/FP ratio in each split
+  cross_val_folds: 5           # for robust evaluation
