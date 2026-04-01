@@ -16,6 +16,7 @@ What this does:
 import argparse
 import logging
 import time
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -26,6 +27,10 @@ from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
+
+# Suppress lightkurve quality-mask cadence warnings — informational only, not errors
+warnings.filterwarnings("ignore", message=".*cadences will be ignored.*")
+warnings.filterwarnings("ignore", category=UserWarning, module="lightkurve")
 
 
 def load_config(config_path: str) -> dict:
@@ -92,7 +97,12 @@ def download_light_curve(kepid: int) -> np.ndarray | None:
 
         lc = lc_collection.stitch()
         lc = lc.remove_nans().remove_outliers(sigma=5.0)
-        flux = lc.flux.value.astype(np.float32)
+        # lightkurve 2.5.x returns an Astropy MaskedNDArray from .flux.value.
+        # .filled(np.nan) converts it to a plain numpy array before casting.
+        raw = lc.flux.value
+        flux = (raw.filled(np.nan) if hasattr(raw, "filled") else np.asarray(raw)).astype(np.float32)
+        # Drop any remaining NaNs introduced by fill
+        flux = flux[np.isfinite(flux)]
         return flux if len(flux) >= 200 else None
     except Exception as e:
         log.debug(f"Failed to download KIC {kepid}: {e}")
