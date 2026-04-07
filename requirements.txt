@@ -22,7 +22,7 @@ shap==0.45.1
 captum==0.7.0              # PyTorch-native attribution: saliency, integrated gradients
 
 # ── Experiment tracking ───────────────────────────────────────────────────────
-mlflow==2.13.0             # local experiment tracking, no account needed
+mlflow==3.11.0rc1             # local experiment tracking, no account needed
 
 # ── Visualisation ─────────────────────────────────────────────────────────────
 matplotlib==3.9.0
