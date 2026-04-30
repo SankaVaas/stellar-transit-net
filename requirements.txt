@@ -30,7 +30,7 @@ seaborn==0.13.2
 plotly==5.22.0             # interactive plots for notebooks
 
 # ── Notebook / dev tooling ────────────────────────────────────────────────────
-jupyterlab==4.2.1
+jupyterlab==4.5.7
 ipywidgets==8.1.3
 tqdm==4.66.4
 pyyaml==6.0.1
