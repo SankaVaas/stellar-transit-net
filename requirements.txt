@@ -10,7 +10,7 @@ astropy==6.1.0             # FITS file handling, units, time systems
 astroquery==0.4.7          # programmatic access to MAST, Simbad, NASA Exoplanet Archive
 
 # ── Deep learning ─────────────────────────────────────────────────────────────
-torch==2.3.0               # CPU build is default; Colab will use CUDA automatically
+torch==2.12.0               # CPU build is default; Colab will use CUDA automatically
 torchvision==0.18.0
 
 # ── Uncertainty quantification ────────────────────────────────────────────────
